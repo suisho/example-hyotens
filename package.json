@@ -1,0 +1,35 @@
+{
+  "name": "hyotens",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify src/index.jsx > lib/index.js",
+    "start": "budo src/index.jsx -v -d --live | garnish",
+    "test": "mocha --compilers js:babel/register"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "^5.2.15",
+    "babelify": "^6.0.2",
+    "browserify": "^10.0.0",
+    "budo": "^4.0.0",
+    "eslint": "^0.20.0",
+    "garnish": "^2.1.3",
+    "mocha": "^2.2.4"
+  },
+  "dependencies": {
+    "classnames": "^2.1.0",
+    "flat": "^1.5.1",
+    "font-awesome": "^4.3.0",
+    "immutable": "^3.7.2",
+    "react": "^0.13.2"
+  }
+}
