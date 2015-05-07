@@ -1,6 +1,6 @@
 import React from "react";
 import Immutable from "immutable";
-import classNames from 'classnames';
+import cx from 'classnames';
 
 class LevelIcon extends React.Component{
   constructor(){
@@ -14,45 +14,46 @@ class LevelIcon extends React.Component{
   clickLevel(){
     this.props.fixedStarLevel(this.props.value);
   }
-  activeClass(){
-    throw new Error("TODO: error message")
-  }
-  inactiveClass(){
-    throw new Error("TODO: error message")
-  }
   render(){
-    var {key, active} = this.props;
-    const starClass = active ? this.activeClass() : this.inactiveClass()
-    const starClasses = classNames("fa", starClass);
+    var {key, classNames} = this.props;
+    const classes = cx("fa", classNames);
     return (<i
       key={key}
-      className={starClasses}
+      className={classes}
       onMouseOver={this.changeDisplayLevel}
       onClick={this.clickLevel}
     />);
   }
 }
-class StarIcon extends LevelIcon{
-  constructor(){
-    super();
-  }
+class StarIcon extends React.Component{
   activeClass(){
     return "fa-star"
   }
   inactiveClass(){
     return "fa-star-o"
   }
-}
-class NoneIcon extends LevelIcon{
-  constructor(){
-    super();
+  render(){
+    var classNames = this.props.active
+      ? this.activeClass()
+      : this.inactiveClass()
+    return (<LevelIcon { ...this.props } classNames={classNames} />)
   }
+}
+
+class NoneIcon extends React.Component{
   activeClass(){
     return "fa-question"
   }
   inactiveClass(){
-    return "fa-close"
+    return "fa-question icon-disabled"
   }
+  render(){
+    var classNames = this.props.active
+      ? this.activeClass()
+      : this.inactiveClass()
+    return (<LevelIcon { ...this.props } classNames={classNames} />)
+  }
+
 }
 export default class StarRating extends React.Component{
   constructor(){
@@ -116,7 +117,7 @@ export default class StarRating extends React.Component{
             value={0}
             active={0 === displayLevel}
             fixedStarLevel={this.fixedStarLevel}
-          />;
+          />
         </div>
         <div>{label}</div>
       </div>
