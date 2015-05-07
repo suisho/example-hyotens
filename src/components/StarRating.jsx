@@ -2,61 +2,130 @@ import React from "react";
 import Immutable from "immutable";
 import classNames from 'classnames';
 
-class StarIcon extends React.Component{
+class LevelIcon extends React.Component{
   constructor(){
     super();
-    this.changeLevel = this.changeLevel.bind(this);
+    this.changeDisplayLevel = this.changeDisplayLevel.bind(this);
+    this.clickLevel = this.clickLevel.bind(this);
   }
-  changeLevel(){
-    this.props.changeStarLevel(this.props.starLevel);
+  changeDisplayLevel(){
+    this.props.hoverStarLevel(this.props.value);
+  }
+  clickLevel(){
+    this.props.fixedStarLevel(this.props.value);
+  }
+  activeClass(){
+    throw new Error("TODO: error message")
+  }
+  inactiveClass(){
+    throw new Error("TODO: error message")
   }
   render(){
-    const {key, active} = this.props;
-    const starClass = active ? "fa-star" : "fa-star-o";
+    var {key, active} = this.props;
+    const starClass = active ? this.activeClass() : this.inactiveClass()
     const starClasses = classNames("fa", starClass);
     return (<i
       key={key}
       className={starClasses}
-      onMouseOver={this.changeLevel}
+      onMouseOver={this.changeDisplayLevel}
+      onClick={this.clickLevel}
     />);
   }
 }
-
+class StarIcon extends LevelIcon{
+  constructor(){
+    super();
+  }
+  activeClass(){
+    return "fa-star"
+  }
+  inactiveClass(){
+    return "fa-star-o"
+  }
+}
+class NoneIcon extends LevelIcon{
+  constructor(){
+    super();
+  }
+  activeClass(){
+    return "fa-question"
+  }
+  inactiveClass(){
+    return "fa-close"
+  }
+}
 export default class StarRating extends React.Component{
   constructor(){
     super();
     this.state = {
-      level: 0,
-      fixed: false
+      displayLevel : 0,
     };
-    this.changeStarLevel = this.changeStarLevel.bind(this);
-    this.resetLevel = this.resetLevel.bind(this);
+    ["fixedStarLevel", "hoverStarLevel", "resetLevel"].map((fn) => {
+      this[fn] = this[fn].bind(this)
+    })
+    // this.fixedStarLevel = this.fixedStarLevel.bind(this);
+    // this.hoverStarLevel = this.hoverStarLevel.bind(this);
+    // this.resetLevel = this.resetLevel.bind(this);
   }
-  changeStarLevel(level){
+  hoverStarLevel(level){
     this.setState({
-      level: level
-    });
+      displayLevel : level
+    })
+  }
+  fixedStarLevel(level){
+    this.setState({
+      displayLevel : level,
+    })
+    this.props.onChangeLevel(this.props.name, level)
   }
   resetLevel(e){
-    this.changeStarLevel(0)
+    this.hoverStarLevel(this.props.level)
+  }
+  getLabel(level){
+    switch(level){
+      case 0: return "わからない"
+      case 5: return "あてはまらない"
+      case 4: return "あまりあてはまらない"
+      case 3: return "どちらともいえない"
+      case 2: return "あまりあてはまらない"
+      case 1: return "あてはまらない"
+    }
+    return "&nbsp;"
   }
   render(){
-    const { level }= this.state;
-    var starsElm = Immutable.Range(0, 5).map((i) => {
+    const { displayLevel } = this.state
+    const starsElm = Immutable.Range(0, 5).map((i) => {
       const starLevel = i + 1
-      const active = (starLevel <= level)
+      const active = (starLevel <= displayLevel)
       return <StarIcon
         key={starLevel}
-        starLevel={starLevel}
+        value={starLevel}
         active={active}
-        changeStarLevel={this.changeStarLevel}
+        fixedStarLevel={this.fixedStarLevel}
+        hoverStarLevel={this.hoverStarLevel}
       />;
     });
+    const label = this.getLabel(displayLevel)
 
     return (
       <div onMouseOut={this.resetLevel}>
-        {starsElm}
+        <div className="evaluation-rating-star">
+          {starsElm}
+          <NoneIcon
+            key={0}
+            value={0}
+            active={0 === displayLevel}
+            fixedStarLevel={this.fixedStarLevel}
+          />;
+        </div>
+        <div>{label}</div>
       </div>
     );
   }
+}
+
+StarRating.PropTypes = {
+  level: React.PropTypes.number,
+  name: React.PropTypes.string,
+  onChangeLevel : React.PropTypes.func
 }
