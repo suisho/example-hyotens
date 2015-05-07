@@ -1,6 +1,6 @@
 import React from 'react';
 import Immutable from 'immutable';
-import {RatingSelector} from './RatingUI.jsx';
+import {RatingSelector, StarRating} from './RatingUI.jsx';
 import LegacyForm from './LegacyForm.jsx';
 import bracketer from '../lib/bracketer';
 
