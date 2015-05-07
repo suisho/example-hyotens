@@ -2,7 +2,7 @@ import React from "react";
 import Immutable from "immutable";
 import cx from 'classnames';
 
-class LevelIcon extends React.Component{
+class Icon extends React.Component{
   constructor(){
     super();
     this.changeDisplayLevel = this.changeDisplayLevel.bind(this);
@@ -25,36 +25,33 @@ class LevelIcon extends React.Component{
     />);
   }
 }
+
+Icon.PropTypes = {
+  clssName: React.PropTypes.arrayOf(React.PropTypes.string),
+  key: React.PropTypes.string,
+  hoverStarLevel: React.PropTypes.func,
+  fixedStarLevel: React.PropTypes.func
+}
+
 class StarIcon extends React.Component{
-  activeClass(){
-    return "fa-star"
-  }
-  inactiveClass(){
-    return "fa-star-o"
-  }
   render(){
-    var classNames = this.props.active
-      ? this.activeClass()
-      : this.inactiveClass()
-    return (<LevelIcon { ...this.props } classNames={classNames} />)
+    var classNames = ["star"]
+    var cls = this.props.active ? "fa-star" : "fa-star-o"
+    classNames.push(cls)
+    return (<Icon { ...this.props } classNames={classNames} />)
   }
 }
 
 class NoneIcon extends React.Component{
-  activeClass(){
-    return "fa-question"
-  }
-  inactiveClass(){
-    return "fa-question icon-disabled"
-  }
   render(){
-    var classNames = this.props.active
-      ? this.activeClass()
-      : this.inactiveClass()
-    return (<LevelIcon { ...this.props } classNames={classNames} />)
+    var classNames = ["fa-close","question"]
+    if(!this.props.active){
+      classNames.push("icon-disabled")
+    }
+    return (<Icon { ...this.props } classNames={classNames} />)
   }
-
 }
+
 export default class StarRating extends React.Component{
   constructor(){
     super();
@@ -64,9 +61,6 @@ export default class StarRating extends React.Component{
     ["fixedStarLevel", "hoverStarLevel", "resetLevel"].map((fn) => {
       this[fn] = this[fn].bind(this)
     })
-    // this.fixedStarLevel = this.fixedStarLevel.bind(this);
-    // this.hoverStarLevel = this.hoverStarLevel.bind(this);
-    // this.resetLevel = this.resetLevel.bind(this);
   }
   hoverStarLevel(level){
     this.setState({
@@ -91,35 +85,47 @@ export default class StarRating extends React.Component{
       case 2: return "あまりあてはまらない"
       case 1: return "あてはまらない"
     }
-    return "&nbsp;"
+    return "&nbsp;" //blank;
   }
-  render(){
-    const { displayLevel } = this.state
-    const starsElm = Immutable.Range(0, 5).map((i) => {
+  generateIconElm(level){
+    const starElms = Immutable.Range(0, 5).map((i) => {
       const starLevel = i + 1
-      const active = (starLevel <= displayLevel)
+      const active = (starLevel <= level)
       return <StarIcon
         key={starLevel}
         value={starLevel}
         active={active}
         fixedStarLevel={this.fixedStarLevel}
         hoverStarLevel={this.hoverStarLevel}
-      />;
+      />
     });
-    const label = this.getLabel(displayLevel)
-
+    const noneElm = (
+      <NoneIcon
+        key={0}
+        value={0}
+        active={0 === level}
+        fixedStarLevel={this.fixedStarLevel}
+        hoverStarLevel={this.hoverStarLevel}
+      />
+    )
+    return (
+      <div>
+        {starElms}
+        {noneElm}
+      </div>
+    );
+  }
+  render(){
+    const { displayLevel } = this.state
+    const { label } = this.props
+    const levelLabel = this.getLabel(displayLevel)
+    const elms = this.generateIconElm(displayLevel)
     return (
       <div onMouseOut={this.resetLevel}>
+        <div>{label}:{levelLabel}</div>
         <div className="evaluation-rating-star">
-          {starsElm}
-          <NoneIcon
-            key={0}
-            value={0}
-            active={0 === displayLevel}
-            fixedStarLevel={this.fixedStarLevel}
-          />
+          {elms}
         </div>
-        <div>{label}</div>
       </div>
     );
   }
