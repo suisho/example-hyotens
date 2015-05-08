@@ -16,6 +16,7 @@ var starLabels = function(){
     }
   }).valueSeq().toArray()
 }
+
 var vectorLabels = function(){
   var evaluate = {
     gender: ["性別の傾向", "女性中心", "男性中心"]
@@ -30,11 +31,24 @@ var vectorLabels = function(){
   }).valueSeq().toArray();
 }
 
+var flagsLabels = function(){
+  var evaluate = {
+    club: "クラブ活動"
+  }
+  return Immutable.Map(evaluate).map(function(item, key){
+    return {
+      name: key,
+      label: item[0],
+    }
+  }).valueSeq().toArray();
+}
+
 export default class Rating extends React.Component{
   constructor(){
     super()
     this.starLabels = starLabels()
     this.vectorLabels = vectorLabels()
+    this.flagsLabels = flagsLabels()
     this.state = {
       data: {
         evaluate: {
@@ -52,24 +66,25 @@ export default class Rating extends React.Component{
       data: newData
     })
   }
+  elmsProps(item, data){
+    return {
+      key: item.name,
+      name: item.name,
+      nameLabel: item.label,
+      level: data.evaluate[item.name],
+      onChangeLevel: this.onChangeEvalueate
+    }
+  }
   generateStarRatingElm(data){
     return this.starLabels.map((item) => {
-      return <StarRating
-        key={item.name}
-        name={item.name}
-        nameLabel={item.label}
-        level={data.evaluate[item.name]}
-        onChangeLevel={this.onChangeEvalueate} />;
+      var props = this.elmsProps(item, data)
+      return <StarRating {...props} />;
     })
   }
   generateVectorRatingElm(data){
     return this.vectorLabels.map((item) => {
+      var props = this.elmsProps(item, data)
       return <VectorRating
-        key={item.name}
-        name={item.name}
-        nameLabel={item.label}
-        level={data.evaluate[item.name]}
-        onChangeLevel={this.onChangeEvalueate}
         leftLabel={item.left}
         rightLabel={item.right}
         />;

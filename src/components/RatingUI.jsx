@@ -38,6 +38,22 @@ export class VectorRating extends React.Component{
   }
 }
 
+export class BinaryRating extends React.Component{
+  getLabels(){
+    return [
+      "あてはまらない"
+      "わからない",
+      "あてはまる"
+    ]
+  }
+  render(){
+    return <RatingSelector
+      {...this.props}
+      labels={this.getLabels()}
+      cancelLevel={1}
+      mode="binary" />
+  }
+}
 class CancelInterface extends React.Component{
   render(){
     const {level, value} = this.props
@@ -79,12 +95,26 @@ class CircleInterface extends React.Component{
     return <span>{elm}</span>
   }
 }
+class BinaryInterface extends React.Component{
+  render(){
+    const {level} = this.props
+    var elm = [0, 2].map((elmLevel) => {
+      return <CircleIcon
+        key={elmLevel}
+        value={elmLevel}
+        active={elmLevel === level}
+        {...this.props}
+      />
+    }).toArray()
+    return <span>{elm}</span>
+  }
+}
 
 class RatingSelector extends React.Component{
   constructor(){
     super();
     this.state = {
-      temporaryLevel : 0,
+      temporaryLevel : this.defaultLevel()
     };
     ["fixedLevel", "hoverLevel", "resetLevel"].map((fn) => {
       this[fn] = this[fn].bind(this)
@@ -116,10 +146,13 @@ class RatingSelector extends React.Component{
     }
     return null
   }
+  defaultLevel(){
+    return this.props.cancelLevel || 0
+  }
   cancelIconElm(level){
     let props = this.interfaceProps()
     return <CancelInterface {...props}
-      value={0}
+      value={this.defaultLevel()}
       level={level}
     />
   }
