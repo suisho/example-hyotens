@@ -2,37 +2,39 @@ import React from "react";
 import Immutable from "immutable";
 import {StarIcon, CircleIcon, CancelIcon} from './Icons.jsx'
 
-
-// export class Stars extends React.Component{
-//   render(){
-//     const {activeLevel, currentLevel} = this.props
-//     const active = activeLevel <= currentLevel
-//     return Immutable.Range(0, 5).map((i) => {
-//       return <StarIcon
-//         {...generateIconProps(currentLevel, active)}
-//       />
-//     }).toArray()
-//   }
-// }
-//
 export class StarRating extends React.Component{
-  getLabel(level){
-    switch(level){
-      case 0: return "わからない"
-      case 5: return "あてはまらない"
-      case 4: return "あまりあてはまらない"
-      case 3: return "どちらともいえない"
-      case 2: return "あまりあてはまらない"
-      case 1: return "あてはまらない"
-    }
-    return "" //blank;
+  getLabels(level){
+    return [
+      "あてはまらない",
+      "あまりあてはまらない",
+      "どちらともいえない",
+      "あてはまる",
+      "とてもあてはまる"
+    ]
   }
   render(){
     return <RatingSelector
       {...this.props}
-      activeFunc={this.activeFunc}
-      labelFunc={this.getLabel}
+      labels={this.getLabels()}
       mode="star" />
+  }
+}
+
+export class VectorRating extends React.Component{
+  getLabels(){
+    return [
+      this.props.leftLabel,
+      "やや" + this.props.leftLabel,
+      "どちらともいえない",
+      "やや" + this.props.rightLabel,
+      this.props.rightLabel
+    ]
+  }
+  render(){
+    return <RatingSelector
+      {...this.props}
+      labels={this.getLabels()}
+      mode="circle" />
   }
 }
 
@@ -62,6 +64,21 @@ class StarInterface extends React.Component{
     return <span>{elm}</span>
   }
 }
+class CircleInterface extends React.Component{
+  render(){
+    const {level} = this.props
+    var elm = Immutable.Range(0, 5).map((i) => {
+      var elmLevel = i + 1
+      return <CircleIcon
+        key={elmLevel}
+        value={elmLevel}
+        active={elmLevel === level}
+        {...this.props}
+      />
+    }).toArray()
+    return <span>{elm}</span>
+  }
+}
 
 class RatingSelector extends React.Component{
   constructor(){
@@ -83,13 +100,6 @@ class RatingSelector extends React.Component{
   resetLevel(e){
     this.hoverLevel(this.props.level)
   }
-  // circleIconElms(level){
-  //   return Immutable.Range(0, 5).map((i) => {
-  //     return <CircleIcon
-  //       {...this.generateIconProps(i + 1, i + 1 === level)}
-  //     />
-  //   }).toArray()
-  // }
   interfaceProps(){
     return {
       onFixed: this.fixedLevel,
@@ -102,8 +112,7 @@ class RatingSelector extends React.Component{
       case "star":
         return <StarInterface {...props} level={level} />
       case "circle":
-      default:
-        return this.circleIconElms(level)
+        return <CircleInterface {...props} level={level} />
     }
     return null
   }
@@ -117,7 +126,7 @@ class RatingSelector extends React.Component{
   render(){
     const { temporaryLevel } = this.state
     const { nameLabel, children, mode} = this.props
-    const label = this.props.labelFunc(temporaryLevel)
+    const label = this.props.labels[temporaryLevel - 1] || "わからない"
     const cancelElms = this.cancelIconElm(temporaryLevel)
     const interfaceElm = this.interfaceElm(temporaryLevel, mode)
 
