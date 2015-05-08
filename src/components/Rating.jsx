@@ -1,6 +1,6 @@
 import React from 'react';
 import Immutable from 'immutable';
-import {RatingSelector, StarRating} from './RatingUI.jsx';
+import {StarRating} from './RatingUI.jsx';
 import LegacyForm from './LegacyForm.jsx';
 import bracketer from '../lib/bracketer';
 
@@ -43,7 +43,7 @@ export default class Rating extends React.Component{
   }
   generateStarRatingElm(data){
     return this.evaluateLabels.map((item) => {
-      return <RatingSelector
+      return <StarRating
         key={item.name}
         name={item.name}
         nameLabel={item.label}
