@@ -5,6 +5,7 @@ import {StarIcon, CircleIcon, CancelIcon} from './Icons.jsx'
 export class StarRating extends React.Component{
   getLabels(level){
     return [
+      "わからない",
       "あてはまらない",
       "あまりあてはまらない",
       "どちらともいえない",
@@ -23,6 +24,7 @@ export class StarRating extends React.Component{
 export class VectorRating extends React.Component{
   getLabels(){
     return [
+      "わからない",
       this.props.leftLabel,
       "やや" + this.props.leftLabel,
       "どちらともいえない",
@@ -41,7 +43,7 @@ export class VectorRating extends React.Component{
 export class BinaryRating extends React.Component{
   getLabels(){
     return [
-      "あてはまらない"
+      "あてはまらない",
       "わからない",
       "あてはまる"
     ]
@@ -95,6 +97,7 @@ class CircleInterface extends React.Component{
     return <span>{elm}</span>
   }
 }
+
 class BinaryInterface extends React.Component{
   render(){
     const {level} = this.props
@@ -105,7 +108,7 @@ class BinaryInterface extends React.Component{
         active={elmLevel === level}
         {...this.props}
       />
-    }).toArray()
+    })
     return <span>{elm}</span>
   }
 }
@@ -114,11 +117,16 @@ class RatingSelector extends React.Component{
   constructor(){
     super();
     this.state = {
-      temporaryLevel : this.defaultLevel()
+      temporaryLevel: 0
     };
     ["fixedLevel", "hoverLevel", "resetLevel"].map((fn) => {
       this[fn] = this[fn].bind(this)
     })
+  }
+  componentWillMount(){
+    this.state = {
+      temporaryLevel: this.defaultLevel()
+    }
   }
   hoverLevel(level){
     this.setState({ temporaryLevel : level })
@@ -143,6 +151,8 @@ class RatingSelector extends React.Component{
         return <StarInterface {...props} level={level} />
       case "circle":
         return <CircleInterface {...props} level={level} />
+      case "binary":
+        return <BinaryInterface {...props} level={level} />
     }
     return null
   }
@@ -159,7 +169,7 @@ class RatingSelector extends React.Component{
   render(){
     const { temporaryLevel } = this.state
     const { nameLabel, children, mode} = this.props
-    const label = this.props.labels[temporaryLevel - 1] || "わからない"
+    const label = this.props.labels[temporaryLevel]
     const cancelElms = this.cancelIconElm(temporaryLevel)
     const interfaceElm = this.interfaceElm(temporaryLevel, mode)
 

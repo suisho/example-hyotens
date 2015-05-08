@@ -1,6 +1,6 @@
 import React from 'react';
 import Immutable from 'immutable';
-import {StarRating, VectorRating} from './RatingUI.jsx';
+import {StarRating, VectorRating, BinaryRating} from './RatingUI.jsx';
 import LegacyForm from './LegacyForm.jsx';
 import bracketer from '../lib/bracketer';
 
@@ -38,7 +38,7 @@ var flagsLabels = function(){
   return Immutable.Map(evaluate).map(function(item, key){
     return {
       name: key,
-      label: item[0],
+      label: item,
     }
   }).valueSeq().toArray();
 }
@@ -84,10 +84,16 @@ export default class Rating extends React.Component{
   generateVectorRatingElm(data){
     return this.vectorLabels.map((item) => {
       var props = this.elmsProps(item, data)
-      return <VectorRating
+      return <VectorRating {...props}
         leftLabel={item.left}
         rightLabel={item.right}
         />;
+    })
+  }
+  generateBinaryRatingElm(data){
+    return this.flagsLabels.map((item) => {
+      var props = this.elmsProps(item, data)
+      return <BinaryRating {...props} />;
     })
   }
   render(){
@@ -97,6 +103,7 @@ export default class Rating extends React.Component{
       <div>
         {this.generateStarRatingElm(data)}
         {this.generateVectorRatingElm(data)}
+        {this.generateBinaryRatingElm(data)}
         <LegacyForm data={legacyData} debug={true}>
           <button>submit</button>
         </LegacyForm>
