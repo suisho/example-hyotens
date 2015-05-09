@@ -56,6 +56,7 @@ export class BinaryRating extends React.Component{
       mode="binary" />
   }
 }
+
 class CancelInterface extends React.Component{
   render(){
     const {level, value} = this.props
