@@ -51,8 +51,8 @@ export class BinaryRating extends React.Component{
   render(){
     return <RatingSelector
       {...this.props}
+      
       labels={this.getLabels()}
-      cancelLevel={1}
       mode="binary" />
   }
 }
@@ -130,10 +130,10 @@ class RatingSelector extends React.Component{
     }
   }
   hoverLevel(level){
-    this.setState({ temporaryLevel : level })
+    this.setState({ temporaryLevel: level })
   }
   fixedLevel(level){
-    this.setState({ temporaryLevel : level })
+    this.setState({ temporaryLevel: level })
     this.props.onChangeLevel(this.props.name, level)
   }
   resetLevel(e){

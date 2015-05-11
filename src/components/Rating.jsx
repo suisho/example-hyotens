@@ -81,16 +81,17 @@ export default class Rating extends React.Component{
     this.starLabels = starLabels()
     this.vectorLabels = vectorLabels()
     this.flagsLabels = flagsLabels()
-    var entry = []
-    entry = entry.concat(this.starLabels.map((item) => { return item.name}))
-    entry = entry.concat(this.vectorLabels.map((item) => { return item.name}))
-    entry = entry.concat(this.flagsLabels.map((item) => { return item.name}))
-
     var defaultData = {}
-    entry.forEach((name) => {
-      defaultData[name] = 0
+    this.starLabels.map((item) => {
+      defaultData[item.name] = 0
     })
-    console.log(entry)
+    this.vectorLabels.map((item) => {
+      defaultData[item.name] = 0
+    })
+    this.flagsLabels.map((item) => {
+      defaultData[item.name] = 1
+    })
+
     this.state = {
       data: {
         evaluate: defaultData
@@ -132,7 +133,7 @@ export default class Rating extends React.Component{
   generateBinaryRatingElm(data){
     return this.flagsLabels.map((item) => {
       var props = this.elmsProps(item, data)
-      return <BinaryRating {...props} />;
+      return <BinaryRating {...props} cancelLevel={1}/>;
     })
   }
   render(){
