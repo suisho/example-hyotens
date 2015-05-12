@@ -1,6 +1,7 @@
 import React from "react";
 import Immutable from "immutable";
 import {StarIcon, CircleIcon, CancelIcon} from './Icons.jsx'
+import {LabelButton} from './LabelButton.jsx'
 
 export class StarRating extends React.Component{
   getLabels(level){
@@ -33,10 +34,14 @@ export class VectorRating extends React.Component{
     ]
   }
   render(){
-    return <RatingSelector
+    return <div>
+      <span className="left">{this.props.leftLabel}</span>
+      <span className="right">{this.props.rightLabel}</span>
+      <RatingSelector
       {...this.props}
       labels={this.getLabels()}
       mode="circle" />
+    </div>
   }
 }
 
@@ -51,7 +56,6 @@ export class BinaryRating extends React.Component{
   render(){
     return <RatingSelector
       {...this.props}
-      
       labels={this.getLabels()}
       mode="binary" />
   }
@@ -70,28 +74,31 @@ class CancelInterface extends React.Component{
 
 class StarInterface extends React.Component{
   render(){
-    const {level} = this.props
+    const {level, currentLevel} = this.props
     var elm = Immutable.Range(0, 5).map((i) => {
       var elmLevel = i + 1
       return <StarIcon
         key={elmLevel}
         value={elmLevel}
         active={elmLevel <= level}
+        currentActive={elmLevel <= currentLevel}
         {...this.props}
       />
     }).toArray()
     return <span>{elm}</span>
   }
 }
+
 class CircleInterface extends React.Component{
   render(){
-    const {level} = this.props
+    const {level, currentLevel} = this.props
     var elm = Immutable.Range(0, 5).map((i) => {
       var elmLevel = i + 1
       return <CircleIcon
         key={elmLevel}
         value={elmLevel}
         active={elmLevel === level}
+        currentActive={elmLevel === currentLevel}
         {...this.props}
       />
     }).toArray()
@@ -101,12 +108,13 @@ class CircleInterface extends React.Component{
 
 class BinaryInterface extends React.Component{
   render(){
-    const {level} = this.props
+    const {level, currentLevel, labels} = this.props
     var elm = [0, 2].map((elmLevel) => {
-      return <CircleIcon
+      return <LabelButton
         key={elmLevel}
         value={elmLevel}
         active={elmLevel === level}
+        currentActive={elmLevel === currentLevel}
         {...this.props}
       />
     })
@@ -142,7 +150,8 @@ class RatingSelector extends React.Component{
   interfaceProps(){
     return {
       onFixed: this.fixedLevel,
-      onHover: this.hoverLevel
+      onHover: this.hoverLevel,
+      currentLevel: this.props.level
     };
   }
   interfaceElm(level, mode){
@@ -169,7 +178,7 @@ class RatingSelector extends React.Component{
   }
   render(){
     const { temporaryLevel } = this.state
-    const { nameLabel, children, mode} = this.props
+    const { nameLabel, mode} = this.props
     const label = this.props.labels[temporaryLevel]
     const cancelElms = this.cancelIconElm(temporaryLevel)
     const interfaceElm = this.interfaceElm(temporaryLevel, mode)
@@ -187,6 +196,7 @@ class RatingSelector extends React.Component{
 
 RatingSelector.PropTypes = {
   level: React.PropTypes.number,
-  onChangeLevel : React.PropTypes.func,
-  labelFunc : React.PropTypes.func
+  onChangeLevel: React.PropTypes.func,
+  labelFunc: React.PropTypes.func,
+  mode: React.PropTypes.oneOf(["star", "circle", "binary"])
 };
