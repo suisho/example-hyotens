@@ -2,11 +2,6 @@ import React from 'react'
 import cx from 'classnames';
 
 class Icon extends React.Component{
-  constructor(){
-    super();
-    this.changeDisplayLevel = this.changeDisplayLevel.bind(this);
-    this.clickLevel = this.clickLevel.bind(this);
-  }
   changeDisplayLevel(){
     this.props.onHover(this.props.value);
   }
@@ -19,8 +14,8 @@ class Icon extends React.Component{
     return (<i
       key={key}
       className={classes}
-      onMouseOver={this.changeDisplayLevel}
-      onClick={this.clickLevel}
+      onMouseOver={this.changeDisplayLevel.bind(this)}
+      onClick={this.clickLevel.bind(this)}
     />);
   }
 }
@@ -42,7 +37,15 @@ export class StarIcon extends React.Component{
 
 export class CircleIcon extends React.Component{
   render(){
-    var cls = this.props.active ? ["fa-circle", "active"] : ["fa-circle-thin"]
+    var cls = (this.props.active || this.props.currentActive)
+            ? ["fa-circle"]
+            : ["fa-circle-thin"]
+    if(this.props.active){
+      cls.push("active")
+    }
+    if(this.props.currentActive){
+      cls.push("current-active")
+    }
     var classNames = ["circle"].concat(cls)
     return (<Icon { ...this.props } classNames={classNames} />)
   }
@@ -50,7 +53,7 @@ export class CircleIcon extends React.Component{
 
 export class CancelIcon extends React.Component{
   render(){
-    var classNames = ["fa-close","question"]
+    var classNames = ["fa-close", "question"]
     if(!this.props.active){
       classNames.push("icon-disabled")
     }
