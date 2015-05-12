@@ -179,7 +179,6 @@ class RatingSelector extends React.Component{
         <div>{nameLabel}:{label}</div>
         <div className="evaluation-rating-star">
           {interfaceElm}
-          {cancelElms}
         </div>
       </div>
     );
