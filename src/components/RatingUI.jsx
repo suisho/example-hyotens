@@ -129,9 +129,6 @@ class RatingSelector extends React.Component{
     this.state = {
       temporaryLevel: 0
     };
-    ["fixedLevel", "hoverLevel", "resetLevel"].map((fn) => {
-      this[fn] = this[fn].bind(this)
-    })
   }
   componentWillMount(){
     this.state = {
@@ -150,8 +147,8 @@ class RatingSelector extends React.Component{
   }
   interfaceProps(){
     return {
-      onFixed: this.fixedLevel,
-      onHover: this.hoverLevel,
+      onFixed: this.fixedLevel.bind(this),
+      onHover: this.hoverLevel.bind(this),
       currentLevel: this.props.level,
       labels: this.props.labels
     };
@@ -171,13 +168,6 @@ class RatingSelector extends React.Component{
   defaultLevel(){
     return this.props.cancelLevel || 0
   }
-  // cancelIconElm(level){
-  //   let props = this.interfaceProps()
-  //   return <CancelInterface {...props}
-  //     value={this.defaultLevel()}
-  //     level={level}
-  //   />
-  // }
   render(){
     const { temporaryLevel } = this.state
     const { nameLabel, mode} = this.props
@@ -186,7 +176,7 @@ class RatingSelector extends React.Component{
     const interfaceElm = this.interfaceElm(temporaryLevel, mode)
 
     return (
-      <div onMouseOut={this.resetLevel} className="evaluate-rating-item">
+      <div onMouseOut={this.resetLevel.bind(this)} className="evaluate-rating-item">
         <div>{nameLabel}:{label}</div>
         {interfaceElm}
       </div>

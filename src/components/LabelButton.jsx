@@ -9,10 +9,13 @@ export class LabelButton extends React.Component{
     this.props.onFixed(this.props.value);
   }
   render(){
-    const {label, active} = this.props
+    const {label, active, currentActive} = this.props
     var classes = ["label-button"]
     if(active){
       classes.push("active")
+    }
+    if(currentActive){
+      classes.push("current-active")
     }
     return (
       <div className={cx(classes)}
