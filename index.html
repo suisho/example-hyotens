@@ -5,27 +5,45 @@
 
     <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css" media="screen" title="no title" charset="utf-8"></link>
     <style>
-    .evaluation-rating-star{
+    .evaluate-rating-item{
+      padding: 20px 0;
+    }
+    .evaluation-rating.rating-star,
+    .evaluation-rating.rating-circle{
       font-size: 32px;
     }
-    
 
-    .evaluation-rating-star .active{
+    .evaluation-rating .active{
       color: rgba(188, 43, 0, 0.44);
 
     }
-    .evaluation-rating-star .current-active{
+    .evaluation-rating .current-active{
         color: #ba3500;
     }
     
-    .evaluation-rating-star .star{
+    .evaluation-rating .star{
       color: #cdc528;
     }
-    .evaluation-rating-star .question{
+    .evaluation-rating .question{
       color: #444;
     }
-    .evaluation-rating-star .question.icon-disabled{
+    .evaluation-rating .question.icon-disabled{
       color: #ccc;
+    }
+    .label-button{
+      display: inline-block;
+      margin-left: 10px;
+      border: 1px solid #91bddb;
+      border-radius: 10px;
+      padding: 0.5em;
+      /*background: #91bddb;*/
+      cursor: pointer;
+      width: 120px;
+      text-align: center;
+    }
+    .label-button.active{
+      color: white;
+      background: #91bddb;
     }
     </style>
   </head>

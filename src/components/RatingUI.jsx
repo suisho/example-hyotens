@@ -1,10 +1,10 @@
 import React from "react";
 import Immutable from "immutable";
-import {StarIcon, CircleIcon, CancelIcon} from './Icons.jsx'
-import {LabelButton} from './LabelButton.jsx'
+import {StarIcon, CircleIcon, CancelIcon} from "./Icons.jsx"
+import {LabelButton} from "./LabelButton.jsx"
 
 export class StarRating extends React.Component{
-  getLabels(level){
+  getLabels(){
     return [
       "わからない",
       "あてはまらない",
@@ -34,9 +34,9 @@ export class VectorRating extends React.Component{
     ]
   }
   render(){
+    // <span className="left">{this.props.leftLabel}</span>
+    // <span className="right">{this.props.rightLabel}</span>
     return <div>
-      <span className="left">{this.props.leftLabel}</span>
-      <span className="right">{this.props.rightLabel}</span>
       <RatingSelector
       {...this.props}
       labels={this.getLabels()}
@@ -60,17 +60,17 @@ export class BinaryRating extends React.Component{
       mode="binary" />
   }
 }
-
-class CancelInterface extends React.Component{
-  render(){
-    const {level, value} = this.props
-    return <CancelIcon
-      { ...this.props}
-      value={value}
-      active={value === level}
-    />
-  }
-}
+// 
+// class CancelInterface extends React.Component{
+//   render(){
+//     const {level, value} = this.props
+//     return <CancelIcon
+//       { ...this.props}
+//       value={value}
+//       active={value === level}
+//     />
+//   }
+// }
 
 class StarInterface extends React.Component{
   render(){
@@ -85,7 +85,7 @@ class StarInterface extends React.Component{
         {...this.props}
       />
     }).toArray()
-    return <span>{elm}</span>
+    return <span className="evaluation-rating rating-star">{elm}</span>
   }
 }
 
@@ -102,7 +102,7 @@ class CircleInterface extends React.Component{
         {...this.props}
       />
     }).toArray()
-    return <span>{elm}</span>
+    return <span className="evaluation-rating rating-circle">{elm}</span>
   }
 }
 
@@ -115,10 +115,11 @@ class BinaryInterface extends React.Component{
         value={elmLevel}
         active={elmLevel === level}
         currentActive={elmLevel === currentLevel}
+        label={labels[elmLevel]}
         {...this.props}
       />
     })
-    return <span>{elm}</span>
+    return <div className="evaluation-rating rating-binary">{elm}</div>
   }
 }
 
@@ -144,14 +145,15 @@ class RatingSelector extends React.Component{
     this.setState({ temporaryLevel: level })
     this.props.onChangeLevel(this.props.name, level)
   }
-  resetLevel(e){
+  resetLevel(){
     this.hoverLevel(this.props.level)
   }
   interfaceProps(){
     return {
       onFixed: this.fixedLevel,
       onHover: this.hoverLevel,
-      currentLevel: this.props.level
+      currentLevel: this.props.level,
+      labels: this.props.labels
     };
   }
   interfaceElm(level, mode){
@@ -169,26 +171,24 @@ class RatingSelector extends React.Component{
   defaultLevel(){
     return this.props.cancelLevel || 0
   }
-  cancelIconElm(level){
-    let props = this.interfaceProps()
-    return <CancelInterface {...props}
-      value={this.defaultLevel()}
-      level={level}
-    />
-  }
+  // cancelIconElm(level){
+  //   let props = this.interfaceProps()
+  //   return <CancelInterface {...props}
+  //     value={this.defaultLevel()}
+  //     level={level}
+  //   />
+  // }
   render(){
     const { temporaryLevel } = this.state
     const { nameLabel, mode} = this.props
     const label = this.props.labels[temporaryLevel]
-    const cancelElms = this.cancelIconElm(temporaryLevel)
+    // const cancelElms = this.cancelIconElm(temporaryLevel)
     const interfaceElm = this.interfaceElm(temporaryLevel, mode)
 
     return (
-      <div onMouseOut={this.resetLevel}>
+      <div onMouseOut={this.resetLevel} className="evaluate-rating-item">
         <div>{nameLabel}:{label}</div>
-        <div className="evaluation-rating-star">
-          {interfaceElm}
-        </div>
+        {interfaceElm}
       </div>
     );
   }
